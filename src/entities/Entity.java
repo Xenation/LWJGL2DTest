@@ -7,9 +7,11 @@ import models.Sprite;
 public class Entity {
 	
 	protected Sprite sprite;
+	protected Collider collider;
 	protected Vector2f position;
 	protected Vector2f scale;
 	protected float rotation;
+	protected float depth;
 	
 	public Entity() {
 		this.sprite = null;
@@ -23,6 +25,21 @@ public class Entity {
 		this.position = pos;
 		this.scale = scale;
 		this.rotation = rot;
+	}
+	public Entity(Sprite sprite, Vector2f pos, Vector2f scale, float rot, int depth) {
+		this.sprite = sprite;
+		this.position = pos;
+		this.scale = scale;
+		this.rotation = rot;
+		this.depth = depth;
+	}
+	
+	public void setCollider(Collider col) {
+		this.collider = col;
+	}
+	
+	public Collider getCollider() {
+		return this.collider;
 	}
 
 	public Sprite getSprite() {
@@ -69,6 +86,14 @@ public class Entity {
 	public void increaseScale(float dx, float dy) {
 		this.scale.x += dx;
 		this.scale.y += dy;
+	}
+
+	public float getDepth() {
+		return depth;
+	}
+
+	public void setDepth(float depth) {
+		this.depth = depth;
 	}
 	
 }

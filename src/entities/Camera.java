@@ -1,5 +1,6 @@
 package entities;
 
+import org.lwjgl.input.Keyboard;
 import org.lwjgl.util.vector.Vector2f;
 
 public class Camera {
@@ -15,6 +16,23 @@ public class Camera {
 	public Camera(Vector2f position, float rotation) {
 		this.position = position;
 		this.rotation = rotation;
+	}
+	
+	public void move() {
+		
+		if (Keyboard.isKeyDown(Keyboard.KEY_NUMPAD8)) {
+			this.position.y += 0.02f;
+		}
+		if (Keyboard.isKeyDown(Keyboard.KEY_NUMPAD5)) {
+			this.position.y -= 0.02f;
+		}
+		if (Keyboard.isKeyDown(Keyboard.KEY_NUMPAD4)) {
+			this.position.x -= 0.02f;
+		}
+		if (Keyboard.isKeyDown(Keyboard.KEY_NUMPAD6)) {
+			this.position.x += 0.02f;
+		}
+		
 	}
 	
 	public Vector2f getPosition() {

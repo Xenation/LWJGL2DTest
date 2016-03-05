@@ -17,17 +17,36 @@ public class MainGameLoop {
 		
 		Camera camera = new Camera(new Vector2f(0.5f, 0), 0);
 		
-		Entity ent = new Entity(new Sprite(loader, "test"), new Vector2f(0, 0), new Vector2f(1, 1), 0);
+		LayerMap layerMap = new LayerMap();
+		layerMap.add(new Layer());
+		layerMap.add(new Layer());
 		
-		Player player = new Player(new Sprite(loader, new Vector2f(0.2f, 0.4f), "perso3.2d"), new Vector2f(0, 0), new Vector2f(1, 1), 0);
+		Entity ent = new Entity(new Sprite(loader, new Vector2f(2, 2), "test"), new Vector2f(2, 0), new Vector2f(1, 1), 0);
+		ent.setCollider(new Collider(ent));
+		ent.getCollider().fitSprite();
+		
+		Player player = new Player(new Sprite(loader, new Vector2f(1f, 2f), "player"), new Vector2f(2, 4), new Vector2f(1, 1), 0);
+		player.setCollider(new Collider(player));;
+		player.getCollider().fitSprite();
+		
+		Entity bck = new Entity(new Sprite(loader, new Vector2f(10, 10), "background"), new Vector2f(-4, 0), new Vector2f(1, 1), 0, -2);
+		
+		Entity grd = new Entity(new Sprite(loader, new Vector2f(4, 1), "ground"), new Vector2f(0, -4), new Vector2f(1, 1), 0);
+		grd.setCollider(new Collider(grd));
+		grd.getCollider().fitSprite();
+		
+		layerMap.getLayer(0).add(ent);
+		layerMap.getLayer(0).add(grd);
+		layerMap.getLayer(0).add(player);
+		layerMap.getLayer(1).add(bck);
 		
 		while (!Display.isCloseRequested()) {
 			// Game Loop
-			player.move();
-			player.increaseRotation(0.1f);
+			player.move(layerMap.getLayer(0));
+			camera.move();
 			
-			renderer.render(ent, camera);
-			renderer.render(player, camera);
+			renderer.prepare();
+			renderer.render(layerMap, camera);
 			
 			DisplayManager.updateDisplay();
 		}

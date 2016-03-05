@@ -9,6 +9,8 @@ import org.lwjgl.util.vector.Vector4f;
 
 import entities.Camera;
 import entities.Entity;
+import entities.Layer;
+import entities.LayerMap;
 import models.RawModel;
 import models.Sprite;
 import shaders.Shader;
@@ -26,7 +28,7 @@ public class EntityRenderer {
 	
 	public EntityRenderer() {
 		shader = new Shader();
-		createOrthoProjectionMatrix(-DisplayManager.aspectRatio, DisplayManager.aspectRatio, -1, 1, 1, -1);
+		createOrthoProjectionMatrix(-DisplayManager.aspectRatio*10, DisplayManager.aspectRatio*10, -10, 10, 2, -5);
 		dispMatrix(projectionMatrix);
 	}
 	
@@ -41,37 +43,62 @@ public class EntityRenderer {
 		System.out.printf("(%.3f\t%.3f\t%.3f\t%.3f)\n", vec.x, vec.y, vec.z, vec.w);
 	}
 	
-	public void render(Entity entity, Camera camera) {
+//	public void render(Entity entity, Camera camera) {
+//		shader.start();
+//		shader.loadProjectionMatrix(projectionMatrix);
+//		shader.loadViewMatrix(camera);
+//		
+//		//prepare();
+//		prepareSprite(entity.getSprite());
+//		
+//		GL11.glEnable(GL11.GL_BLEND);
+//		GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
+//		
+//		Matrix4f matrix = Maths.createTransformationMatrix(entity.getPosition(), entity.getScale(), entity.getRotation(), entity.getDepth());
+//		shader.loadTransformation(matrix);
+//		GL11.glDrawArrays(GL11.GL_TRIANGLE_STRIP, 0, entity.getSprite().getModel().getVextexCount());
+//		
+////		DEBUG THAT SIMULATES SHADER CALCULATIONS
+////		System.out.println("\nTRANSF-MATRIX");
+////		dispMatrix(matrix);
+////		System.out.println("gl_Positions");
+////		float sx = entity.getSprite().getSize().x;
+////		float sy = entity.getSprite().getSize().y;
+////		float relpos[][] = {{-sx/2, sy}, {sx/2, sy/2}, {-sx/2, -sy/2}, {sx/2, -sy/2}};
+////		for (float vert[] : relpos) {
+////			Vector4f vec = new Vector4f();
+////			Matrix4f.transform(matrix, new Vector4f(vert[0], vert[1], 0.0f, 1.0f), vec);
+////			Matrix4f.transform(Maths.createViewMatrix(camera), vec, vec);
+////			Matrix4f.transform(projectionMatrix, vec, vec);
+////			dispVector4(vec);
+////		}
+//		
+//		unbindSprite();
+//		shader.stop();
+//	}
+	
+	public void render(LayerMap layers, Camera camera) {
 		shader.start();
 		shader.loadProjectionMatrix(projectionMatrix);
 		shader.loadViewMatrix(camera);
 		
-		prepare();
-		prepareSprite(entity.getSprite());
+		for (int i = layers.getLayersCount()-1; i >= 0; i--) {
+			Layer layer = layers.getLayer(i);
+			for (Sprite spr : layer.getMap().keySet()) {
+				prepareSprite(spr);
+				GL11.glEnable(GL11.GL_BLEND);
+				GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
+				
+				for (Entity ent : layer.get(spr)) {
+					Matrix4f matrix = Maths.createTransformationMatrix(ent.getPosition(), ent.getScale(), ent.getRotation(), ent.getDepth());
+					shader.loadTransformation(matrix);
+					GL11.glDrawArrays(GL11.GL_TRIANGLE_STRIP, 0, ent.getSprite().getModel().getVextexCount());
+				}
+				
+				unbindSprite();
+			}
+		}
 		
-		GL11.glEnable(GL11.GL_BLEND);
-		GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
-		
-		Matrix4f matrix = Maths.createTransformationMatrix(entity.getPosition(), entity.getScale(), entity.getRotation());
-		shader.loadTransformation(matrix);
-		GL11.glDrawArrays(GL11.GL_TRIANGLE_STRIP, 0, entity.getSprite().getModel().getVextexCount());
-		
-//		DEBUG THAT SIMULATES SHADER CALCULATIONS
-//		System.out.println("\nTRANSF-MATRIX");
-//		dispMatrix(matrix);
-//		System.out.println("gl_Positions");
-//		float sx = entity.getSprite().getSize().x;
-//		float sy = entity.getSprite().getSize().y;
-//		float relpos[][] = {{-sx/2, sy}, {sx/2, sy/2}, {-sx/2, -sy/2}, {sx/2, -sy/2}};
-//		for (float vert[] : relpos) {
-//			Vector4f vec = new Vector4f();
-//			Matrix4f.transform(matrix, new Vector4f(vert[0], vert[1], 0.0f, 1.0f), vec);
-//			Matrix4f.transform(Maths.createViewMatrix(camera), vec, vec);
-//			Matrix4f.transform(projectionMatrix, vec, vec);
-//			dispVector4(vec);
-//		}
-		
-		unbindSprite();
 		shader.stop();
 	}
 	
@@ -90,7 +117,7 @@ public class EntityRenderer {
 		GL30.glBindVertexArray(0);
 	}
 	
-	private void prepare() {
+	public void prepare() {
 		GL11.glClearColor(RED, GREEN, BLUE, 0.1f);
 		GL11.glClear(GL11.GL_COLOR_BUFFER_BIT | GL11.GL_DEPTH_BUFFER_BIT);
 	}
