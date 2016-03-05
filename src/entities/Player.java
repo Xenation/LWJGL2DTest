@@ -12,6 +12,7 @@ public class Player extends Entity {
 	private static float GRAVITY = -5;
 	
 	private Vector2f velocity = new Vector2f(0, 0);
+	private float speed = 2;
 	private boolean isInAir = true;
 	
 	public Player(Sprite sprite, Vector2f pos, Vector2f scale, float rot) {
@@ -20,7 +21,7 @@ public class Player extends Entity {
 	
 	public void move(Layer layer) {
 		catchVelocity();
-		float dx = velocity.x * DisplayManager.deltaTime();
+		float dx = velocity.x * DisplayManager.deltaTime() * speed;
 		float dy = velocity.y * DisplayManager.deltaTime();
 		
 		Vector2f slide = new Vector2f(1, 1);
@@ -29,7 +30,7 @@ public class Player extends Entity {
 				if (ent.collider != null && ent != this) {
 					slide = this.collider.collideSlide(ent.collider, dx, dy);
 					if (slide.y == 0) {
-						if (dy < 0){
+						if (dy < 0) {
 							isInAir = false;
 						}
 						velocity.y = 0;
@@ -39,6 +40,9 @@ public class Player extends Entity {
 				}
 			}
 		}
+		
+		if (dy < 0)
+			isInAir = true;
 		
 		velocity.y += GRAVITY * DisplayManager.deltaTime();
 		
@@ -51,18 +55,12 @@ public class Player extends Entity {
 		
 		float vx = 0;
 		float vy = 0;
-//		if (Keyboard.isKeyDown(Keyboard.KEY_Z)) {
-//			vy += 1;
-//		}
 		if (Keyboard.isKeyDown(Keyboard.KEY_Q)) {
 			vx -= 1;
 			if (this.scale.x > 0) {
 				this.scale.x = -this.scale.x;
 			}
 		}
-//		if (Keyboard.isKeyDown(Keyboard.KEY_S)) {
-//			vy -= 1;
-//		}
 		if (Keyboard.isKeyDown(Keyboard.KEY_D)) {
 			vx += 1;
 			if (this.scale.x < 0) {

@@ -8,6 +8,8 @@ public class Camera {
 	private Vector2f position;
 	private float rotation;
 	
+	private Entity follow;
+	
 	public Camera() {
 		this.position = new Vector2f(0, 0);
 		this.rotation = 0;
@@ -20,19 +22,27 @@ public class Camera {
 	
 	public void move() {
 		
-		if (Keyboard.isKeyDown(Keyboard.KEY_NUMPAD8)) {
-			this.position.y += 0.02f;
-		}
-		if (Keyboard.isKeyDown(Keyboard.KEY_NUMPAD5)) {
-			this.position.y -= 0.02f;
-		}
-		if (Keyboard.isKeyDown(Keyboard.KEY_NUMPAD4)) {
-			this.position.x -= 0.02f;
-		}
-		if (Keyboard.isKeyDown(Keyboard.KEY_NUMPAD6)) {
-			this.position.x += 0.02f;
+		if (follow != null) {
+			this.position.set(follow.getPosition());
+		} else {
+			if (Keyboard.isKeyDown(Keyboard.KEY_NUMPAD8)) {
+				this.position.y += 0.02f;
+			}
+			if (Keyboard.isKeyDown(Keyboard.KEY_NUMPAD5)) {
+				this.position.y -= 0.02f;
+			}
+			if (Keyboard.isKeyDown(Keyboard.KEY_NUMPAD4)) {
+				this.position.x -= 0.02f;
+			}
+			if (Keyboard.isKeyDown(Keyboard.KEY_NUMPAD6)) {
+				this.position.x += 0.02f;
+			}
 		}
 		
+	}
+	
+	public void setFollow(Entity ent) {
+		this.follow = ent;
 	}
 	
 	public Vector2f getPosition() {

@@ -19,7 +19,19 @@ public class Entity {
 		this.scale = new Vector2f(1, 1);
 		this.rotation = 0;
 	}
-	
+	public Entity(Sprite sprite, Vector2f pos, float rot) {
+		this.sprite = sprite;
+		this.position = pos;
+		this.scale = new Vector2f(1, 1);
+		this.rotation = rot;
+	}
+	public Entity(Sprite sprite, Vector2f pos, float rot, int depth) {
+		this.sprite = sprite;
+		this.position = pos;
+		this.scale = new Vector2f(1, 1);
+		this.rotation = rot;
+		this.depth = depth;
+	}
 	public Entity(Sprite sprite, Vector2f pos, Vector2f scale, float rot) {
 		this.sprite = sprite;
 		this.position = pos;
