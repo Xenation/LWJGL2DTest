@@ -11,7 +11,7 @@ public class Sprite {
 	protected RawModel model;
 	
 	public Sprite(Loader loader, String fileName) {
-		this.size = new Vector2f(0.1f, 0.1f);
+		this.size = new Vector2f(1, 1);
 		this.texture = loader.loadTexture(fileName);
 		generateModel(loader);
 	}

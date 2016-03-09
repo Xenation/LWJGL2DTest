@@ -29,6 +29,40 @@ public class Collider {
 		this.h = entity.getSprite().getSize().y;
 	}
 	
+	public void increaseWidthCentered(float w) {
+		this.x -= w/2;
+		this.w += w;
+	}
+	
+	public void increaseHeightCentered(float h) {
+		this.y -= h/2;
+		this.h += h;
+	}
+	
+	public void increaseWidth(float w) {
+		this.w += w;
+	}
+	
+	public void increaseHeight(float h) {
+		this.h += h;
+	}
+	
+	public void setWidth(float w) {
+		this.w = w;
+	}
+	
+	public void setHeight(float h) {
+		this.h = h;
+	}
+	
+	public void setX(float x) {
+		this.x = x;
+	}
+	
+	public void setY(float y) {
+		this.y = y;
+	}
+	
 	public boolean isColliding(Collider col) {
 		if ((col.getWX() < this.getWX() + this.w) && (col.getWX() + col.w > this.getWX())
 				&& (col.getWY() < this.getWY() + this.h) && (col.getWY() + col.h > this.getWY())) {
@@ -45,6 +79,14 @@ public class Collider {
 		return false;
 	}
 	
+	public boolean isColliding(Tile til, float nx, float ny) {
+		if ((til.x < this.getWX() + nx + this.w) && (til.x + Tile.TILE_SIZE> this.getWX() + nx)
+				&& (til.y < this.getWY() + ny + this.h) && (til.y + Tile.TILE_SIZE > this.getWY() + ny)) {
+			return true;
+		}
+		return false;
+	}
+	
 	public Vector2f collideSlide(Collider col, float nx, float ny) {
 		Vector2f slide = new Vector2f(1, 1);
 		if (isColliding(col, nx, ny)) {
@@ -52,6 +94,18 @@ public class Collider {
 				slide.x = 0;
 			if (!isCollidingY(col))
 				slide.y = 0;
+		}
+		return slide;
+	}
+	
+	public Vector2f collideSlide(Tile til, float nx, float ny) {
+		Vector2f slide = new Vector2f(1, 1);
+		if (isColliding(til, nx, ny)) {
+			if (!isCollidingY(til)) {
+				slide.y = 0;
+			}
+			if (!isCollidingX(til))
+				slide.x = 0;
 		}
 		return slide;
 	}
@@ -65,6 +119,20 @@ public class Collider {
 	
 	private boolean isCollidingY(Collider col) {
 		if ((col.getWY() < this.getWY() + this.h) && (col.getWY() + col.h > this.getWY())) {
+			return true;
+		}
+		return false;
+	}
+	
+	private boolean isCollidingX(Tile til) {
+		if ((til.x < this.getWX() + this.w) && (til.x + Tile.TILE_SIZE > this.getWX())) {
+			return true;
+		}
+		return false;
+	}
+	
+	private boolean isCollidingY(Tile til) {
+		if ((til.y < this.getWY() + this.h) && (til.y + Tile.TILE_SIZE > this.getWY())) {
 			return true;
 		}
 		return false;

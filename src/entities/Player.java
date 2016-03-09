@@ -5,6 +5,7 @@ import org.lwjgl.opengl.Display;
 import org.lwjgl.util.vector.Vector2f;
 
 import models.Sprite;
+import models.TileSprite;
 import render.DisplayManager;
 
 public class Player extends Entity {
@@ -19,11 +20,13 @@ public class Player extends Entity {
 		super(sprite, pos, scale, rot);
 	}
 	
-	public void move(Layer layer) {
+	public void move(Layer layer, ChunkMap chunks) {
 		catchVelocity();
+		velocity.y += GRAVITY * DisplayManager.deltaTime();
 		float dx = velocity.x * DisplayManager.deltaTime() * speed;
 		float dy = velocity.y * DisplayManager.deltaTime();
 		
+		// TODO fix collision order bug (grip on tile of same y)
 		Vector2f slide = new Vector2f(1, 1);
 		for (Sprite spr : layer.getMap().keySet()) {
 			for (Entity ent : layer.getMap().get(spr)) {
@@ -41,10 +44,24 @@ public class Player extends Entity {
 			}
 		}
 		
+		for (Chunk chk : chunks.getMap().values()) {
+			for (TileSprite spr : chk.getMap().keySet()) {
+				for (Tile til : chk.get(spr)) {
+					slide = this.collider.collideSlide(til, dx, dy);
+					if (slide.y == 0) {
+						if (dy < 0) {
+							isInAir = false;
+						}
+						velocity.y = 0;
+					}
+					dx *= slide.x;
+					dy *= slide.y;
+				}
+			}
+		}
+		
 		if (dy < 0)
 			isInAir = true;
-		
-		velocity.y += GRAVITY * DisplayManager.deltaTime();
 		
 		this.increasePosition(dx, dy);
 		

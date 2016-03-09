@@ -8,15 +8,21 @@ import org.lwjgl.util.vector.Matrix4f;
 import org.lwjgl.util.vector.Vector4f;
 
 import entities.Camera;
+import entities.Chunk;
+import entities.ChunkMap;
 import entities.Entity;
 import entities.Layer;
 import entities.LayerMap;
+import entities.Tile;
 import models.RawModel;
 import models.Sprite;
+import models.TileSprite;
 import shaders.Shader;
 import toolbox.Maths;
 
-public class EntityRenderer {
+public class Renderer {
+	
+	public static final float UNITS_Y = 20f;
 	
 	private static final float RED = 0.529412f;
 	private static final float GREEN = 0.807843f;
@@ -26,10 +32,13 @@ public class EntityRenderer {
 	
 	private Shader shader;
 	
-	public EntityRenderer() {
+	public Renderer() {
 		shader = new Shader();
-		createOrthoProjectionMatrix(-DisplayManager.aspectRatio*10, DisplayManager.aspectRatio*10, -10, 10, 2, -5);
+		createOrthoProjectionMatrix(-DisplayManager.aspectRatio*UNITS_Y/2, DisplayManager.aspectRatio*UNITS_Y/2, -UNITS_Y/2, UNITS_Y/2, 2, -5);
 		dispMatrix(projectionMatrix);
+		shader.start();
+		shader.loadProjectionMatrix(projectionMatrix);
+		shader.stop();
 	}
 	
 	public static void dispMatrix(Matrix4f mat) {
@@ -77,9 +86,8 @@ public class EntityRenderer {
 //		shader.stop();
 //	}
 	
-	public void render(LayerMap layers, Camera camera) {
+	public void renderLayers(LayerMap layers, Camera camera) {
 		shader.start();
-		shader.loadProjectionMatrix(projectionMatrix);
 		shader.loadViewMatrix(camera);
 		
 		for (int i = layers.getLayersCount()-1; i >= 0; i--) {
@@ -102,7 +110,39 @@ public class EntityRenderer {
 		shader.stop();
 	}
 	
+	public void renderChunks(ChunkMap chunks, Camera camera) {
+		shader.start();
+		shader.loadViewMatrix(camera);
+		
+		for (Chunk chk : chunks.getMap().values()) {
+			for (TileSprite spr : chk.getMap().keySet()) {
+				prepareSprite(spr);
+				GL11.glEnable(GL11.GL_BLEND);
+				GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
+				
+				for (Tile tile : chk.get(spr)) {
+					Matrix4f matrix = Maths.createTransformationMatrix(tile.x, tile.y);
+					shader.loadTransformation(matrix);
+					GL11.glDrawArrays(GL11.GL_TRIANGLE_STRIP, 0, tile.getSprite().getModel().getVextexCount());
+				}
+				
+				unbindSprite();
+			}
+		}
+		
+		shader.stop();
+	}
+	
 	private void prepareSprite(Sprite spr) {
+		RawModel raw = spr.getModel();
+		GL30.glBindVertexArray(raw.getVaoID());
+		GL20.glEnableVertexAttribArray(0);
+		GL20.glEnableVertexAttribArray(1);
+		GL13.glActiveTexture(GL13.GL_TEXTURE0);
+		GL11.glBindTexture(GL11.GL_TEXTURE_2D, spr.getTexture());
+	}
+	
+	private void prepareSprite(TileSprite spr) {
 		RawModel raw = spr.getModel();
 		GL30.glBindVertexArray(raw.getVaoID());
 		GL20.glEnableVertexAttribArray(0);

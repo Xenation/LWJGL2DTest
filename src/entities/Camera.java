@@ -9,6 +9,7 @@ public class Camera {
 	private float rotation;
 	
 	private Entity follow;
+//	private Entity move;
 	
 	public Camera() {
 		this.position = new Vector2f(0, 0);
@@ -39,7 +40,18 @@ public class Camera {
 			}
 		}
 		
+		// CODE EXEMPLE FOR MOUSE CATCHING
+//		if (move != null) {
+//			move.position.x = this.position.x + (Mouse.getX() - Display.getWidth()/2) / ((float) Display.getHeight() / EntityRenderer.UNITS_Y);
+//			move.position.y = this.position.y + (Mouse.getY() - Display.getHeight()/2) / ((float) Display.getHeight() / EntityRenderer.UNITS_Y);
+//			Display.setTitle("x"+move.position.x+"    y"+move.position.y);
+//		}
+		
 	}
+	
+//	public void setMove(Entity ent) {
+//		this.move = ent;
+//	}
 	
 	public void setFollow(Entity ent) {
 		this.follow = ent;

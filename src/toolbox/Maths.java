@@ -34,6 +34,13 @@ public class Maths {
 		return matrix;
 	}
 	
+	public static Matrix4f createTransformationMatrix(int x, int y) {
+		Matrix4f matrix = new Matrix4f();
+		matrix.setIdentity();
+		Matrix4f.translate(new Vector2f(x, y), matrix, matrix);
+		return matrix;
+	}
+	
 	public static Matrix4f createViewMatrix(Camera camera) {
 		Matrix4f matrix = new Matrix4f();
 		matrix.setIdentity();
