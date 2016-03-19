@@ -8,16 +8,16 @@ import org.lwjgl.util.vector.Matrix4f;
 import org.lwjgl.util.vector.Vector4f;
 
 import entities.Camera;
-import entities.Chunk;
-import entities.ChunkMap;
 import entities.Entity;
-import entities.Layer;
-import entities.LayerMap;
 import entities.Tile;
 import models.RawModel;
 import models.Sprite;
 import models.TileSprite;
 import shaders.Shader;
+import storage.Chunk;
+import storage.ChunkMap;
+import storage.Layer;
+import storage.LayerMap;
 import toolbox.Maths;
 
 public class Renderer {
@@ -114,7 +114,7 @@ public class Renderer {
 		shader.start();
 		shader.loadViewMatrix(camera);
 		
-		for (Chunk chk : chunks.getMap().values()) {
+		for (Chunk chk : chunks.getSurroundings((int) camera.getPosition().x, (int) camera.getPosition().y, (int) UNITS_Y/2, (int) UNITS_Y).values()) {
 			for (TileSprite spr : chk.getMap().keySet()) {
 				prepareSprite(spr);
 				GL11.glEnable(GL11.GL_BLEND);

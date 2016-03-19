@@ -1,10 +1,11 @@
-package entities;
+package storage;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import entities.Entity;
 import models.*;
 
 public class Layer {
@@ -13,11 +14,11 @@ public class Layer {
 	
 	public void add(Entity ent) {
 		if (layerMap.containsKey(ent.getSprite())) {
-			layerMap.get(ent.sprite).add(ent);
+			layerMap.get(ent.getSprite()).add(ent);
 		} else {
 			List<Entity> newList = new ArrayList<Entity>();
 			newList.add(ent);
-			layerMap.put(ent.sprite, newList);
+			layerMap.put(ent.getSprite(), newList);
 		}
 	}
 	
@@ -28,8 +29,8 @@ public class Layer {
 	}
 	
 	public void remove(Entity ent) {
-		if (layerMap.containsKey(ent.sprite)) {
-			layerMap.get(ent.sprite).remove(ent);
+		if (layerMap.containsKey(ent.getSprite())) {
+			layerMap.get(ent.getSprite()).remove(ent);
 		}
 	}
 	

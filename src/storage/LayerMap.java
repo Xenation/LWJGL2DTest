@@ -1,4 +1,4 @@
-package entities;
+package storage;
 
 import java.util.ArrayList;
 

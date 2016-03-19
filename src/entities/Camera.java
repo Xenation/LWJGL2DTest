@@ -1,7 +1,14 @@
 package entities;
 
 import org.lwjgl.input.Keyboard;
+import org.lwjgl.input.Mouse;
+import org.lwjgl.opengl.Display;
 import org.lwjgl.util.vector.Vector2f;
+
+import models.TileSprite;
+import render.DisplayManager;
+import render.Renderer;
+import storage.ChunkMap;
 
 public class Camera {
 	
@@ -9,7 +16,7 @@ public class Camera {
 	private float rotation;
 	
 	private Entity follow;
-//	private Entity move;
+	private TileSprite tileSpr;
 	
 	public Camera() {
 		this.position = new Vector2f(0, 0);
@@ -21,7 +28,10 @@ public class Camera {
 		this.rotation = rotation;
 	}
 	
-	public void move() {
+	public void move(ChunkMap chkMap) {
+		
+		chkMap.initializeChunks((int) position.x, (int) position.y, (int) Renderer.UNITS_Y/2, (int) Renderer.UNITS_Y);
+		chkMap.generateFlatTiles(tileSpr, -8);
 		
 		if (follow != null) {
 			this.position.set(follow.getPosition());
@@ -40,12 +50,28 @@ public class Camera {
 			}
 		}
 		
+		Display.setTitle("FPS"+(int)(1/DisplayManager.deltaTime()));
+		
 		// CODE EXEMPLE FOR MOUSE CATCHING
 //		if (move != null) {
 //			move.position.x = this.position.x + (Mouse.getX() - Display.getWidth()/2) / ((float) Display.getHeight() / EntityRenderer.UNITS_Y);
 //			move.position.y = this.position.y + (Mouse.getY() - Display.getHeight()/2) / ((float) Display.getHeight() / EntityRenderer.UNITS_Y);
 //			Display.setTitle("x"+move.position.x+"    y"+move.position.y);
 //		}
+		
+		if (tileSpr != null && Mouse.isButtonDown(0)) {
+			float posX = this.position.x + (Mouse.getX() - Display.getWidth()/2) / ((float) Display.getHeight() / Renderer.UNITS_Y);
+			float posY = this.position.y + (Mouse.getY() - Display.getHeight()/2) / ((float) Display.getHeight() / Renderer.UNITS_Y);
+//			Display.setTitle("X"+Math.floor(posX)+"    Y"+Math.floor(posY));
+			chkMap.addTile(new Tile(tileSpr, (int) Math.floor(posX), (int) Math.floor(posY)));
+		}
+		
+		if (Mouse.isButtonDown(1)) {
+			float posX = this.position.x + (Mouse.getX() - Display.getWidth()/2) / ((float) Display.getHeight() / Renderer.UNITS_Y);
+			float posY = this.position.y + (Mouse.getY() - Display.getHeight()/2) / ((float) Display.getHeight() / Renderer.UNITS_Y);
+//			Display.setTitle("X"+Math.floor(posX)+"    Y"+Math.floor(posY));
+			chkMap.removeTile((int) Math.floor(posX), (int) Math.floor(posY));
+		}
 		
 	}
 	
@@ -55,6 +81,10 @@ public class Camera {
 	
 	public void setFollow(Entity ent) {
 		this.follow = ent;
+	}
+	
+	public void setTile(TileSprite til) {
+		this.tileSpr = til;
 	}
 	
 	public Vector2f getPosition() {

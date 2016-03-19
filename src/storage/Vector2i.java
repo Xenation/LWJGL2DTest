@@ -1,4 +1,4 @@
-package toolbox;
+package storage;
 
 public class Vector2i {
 	

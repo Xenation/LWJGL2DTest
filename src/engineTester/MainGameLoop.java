@@ -6,6 +6,9 @@ import org.lwjgl.util.vector.Vector2f;
 import entities.*;
 import models.*;
 import render.*;
+import storage.ChunkMap;
+import storage.Layer;
+import storage.LayerMap;
 
 public class MainGameLoop {
 	
@@ -33,7 +36,7 @@ public class MainGameLoop {
 		player.setCollider(new Collider(player));;
 		player.getCollider().fitSprite();
 		player.getCollider().increaseWidthCentered(-0.05f);
-		player.getCollider().increaseHeight(-0.05f);
+		player.getCollider().increaseHeight(-0.001f);
 		camera.setFollow(player);
 		
 		Entity bck = new Entity(new Sprite(loader, new Vector2f(20, 20), "background"), new Vector2f(0, 0), 0, -2);
@@ -49,28 +52,14 @@ public class MainGameLoop {
 		layerMap.getLayer(1).add(bck);
 		
 		ChunkMap chkMap = new ChunkMap();
-		chkMap.add(new Chunk());
-		chkMap.add(new Chunk(-1, 0));
-		chkMap.add(new Chunk(0, -1));
-		chkMap.add(new Chunk(-1, -1));
 		
-		TileSprite tilSpr = new TileSprite(loader, "test");
-		chkMap.getAt(0, 0).add(new Tile(tilSpr, 5, 5));
-		chkMap.getAt(0, 0).add(new Tile(tilSpr, 5, 4));
-		chkMap.getAt(0, 0).add(new Tile(tilSpr, 4, 4));
-		
-		chkMap.getAt(0, -1).add(new Tile(tilSpr, 0, -4));
-		chkMap.getAt(0, -1).add(new Tile(tilSpr, 1, -4));
-		chkMap.getAt(0, -1).add(new Tile(tilSpr, 2, -4));
-		
-		chkMap.getAt(-1, -1).add(new Tile(tilSpr, -1, -4));
-		chkMap.getAt(-1, -1).add(new Tile(tilSpr, -2, -4));
-		chkMap.getAt(-1, -1).add(new Tile(tilSpr, -3, -4));
+		TileSprite tilSpr = new TileSprite(loader, "tile_dirt");
+		camera.setTile(tilSpr);
 		
 		while (!Display.isCloseRequested()) {
 			// Game Loop
 			player.move(layerMap.getLayer(0), chkMap);
-			camera.move();
+			camera.move(chkMap);
 			
 			renderer.prepare();
 			renderer.renderLayers(layerMap, camera);

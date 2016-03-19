@@ -2,6 +2,8 @@ package entities;
 
 import org.lwjgl.util.vector.Vector2f;
 
+import storage.ChunkMap;
+
 public class Collider {
 	
 	private float x, y, w, h;
@@ -98,14 +100,24 @@ public class Collider {
 		return slide;
 	}
 	
-	public Vector2f collideSlide(Tile til, float nx, float ny) {
+	public Vector2f collideSlide(Tile til, ChunkMap chkMap, float nx, float ny) {
 		Vector2f slide = new Vector2f(1, 1);
 		if (isColliding(til, nx, ny)) {
+			Tile left = chkMap.getLeftTile(til);
+			Tile right = chkMap.getRightTile(til);
+//			Tile top = chkMap.getTopTile(til);
+//			Tile bottom = chkMap.getBottomTile(til);
 			if (!isCollidingY(til)) {
 				slide.y = 0;
 			}
-			if (!isCollidingX(til))
-				slide.x = 0;
+			if (!isCollidingX(til)) {
+				if ((left != null && !isColliding(left, nx, ny)) && (right != null && !isColliding(right, nx, ny))) {
+					slide.x = 0;
+				}
+				if (isCollidingY(til)) {
+					slide.x = 0;
+				}
+			}
 		}
 		return slide;
 	}
