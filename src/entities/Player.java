@@ -30,7 +30,6 @@ public class Player extends Entity {
 		float dx = velocity.x * DisplayManager.deltaTime();
 		float dy = velocity.y * DisplayManager.deltaTime();
 		
-		// TODO fix collision order bug (grip on tile of same y)
 		Vector2f slide = new Vector2f(1, 1);
 		for (Sprite spr : layer.getMap().keySet()) {
 			for (Entity ent : layer.getMap().get(spr)) {
@@ -68,8 +67,6 @@ public class Player extends Entity {
 			isInAir = true;
 		
 		this.increasePosition(dx, dy);
-		
-		//Display.setTitle(this.velocity.y+"");
 	}
 	
 	private void catchVelocity() {

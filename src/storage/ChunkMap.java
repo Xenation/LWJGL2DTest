@@ -50,6 +50,7 @@ public class ChunkMap {
 		return chunkMap;
 	}
 	
+	// Chunk
 	public Chunk getAt(Vector2i pos) {
 		for (Vector2i vec : chunkMap.keySet()) {
 			if (vec.equals(pos)) {
@@ -58,7 +59,6 @@ public class ChunkMap {
 		}
 		return null;
 	}
-	
 	public Chunk getAt(int x, int y) {
 		for (Vector2i vec : chunkMap.keySet()) {
 			if (vec.equals(x, y)) {
@@ -68,54 +68,57 @@ public class ChunkMap {
 		return null;
 	}
 	
+	// Tile relative
 	public Tile getLeftTile(Tile tile) {
-		Chunk chk = getAt((int) Math.floor(tile.x/8f), (int) Math.floor(tile.y/8f));
-		for (TileSprite spr : chunkMap.get(chk.getPosition()).getMap().keySet()) {
-			for (Tile til : chunkMap.get(chk.getPosition()).getMap().get(spr)) {
-				if (tile.x == til.x - 1) {
-					return til;
+		for (Chunk chk : chunkMap.values()) {
+			for (TileSprite spr : chunkMap.get(chk.getPosition()).getMap().keySet()) {
+				for (Tile til : chunkMap.get(chk.getPosition()).getMap().get(spr)) {
+					if (tile.x == til.x + 1 && tile.y == til.y) {
+						return til;
+					}
 				}
 			}
 		}
 		return null;
 	}
-	
 	public Tile getRightTile(Tile tile) {
-		Chunk chk = getAt((int) Math.floor(tile.x/8f), (int) Math.floor(tile.y/8f));
-		for (TileSprite spr : chunkMap.get(chk.getPosition()).getMap().keySet()) {
-			for (Tile til : chunkMap.get(chk.getPosition()).getMap().get(spr)) {
-				if (tile.x == til.x + 1) {
-					return til;
+		for (Chunk chk : chunkMap.values()) {
+			for (TileSprite spr : chunkMap.get(chk.getPosition()).getMap().keySet()) {
+				for (Tile til : chunkMap.get(chk.getPosition()).getMap().get(spr)) {
+					if (tile.x == til.x - 1 && tile.y == til.y) {
+						return til;
+					}
 				}
 			}
 		}
 		return null;
 	}
-	
 	public Tile getTopTile(Tile tile) {
-		Chunk chk = getAt((int) Math.floor(tile.x/8f), (int) Math.floor(tile.y/8f));
-		for (TileSprite spr : chunkMap.get(chk.getPosition()).getMap().keySet()) {
-			for (Tile til : chunkMap.get(chk.getPosition()).getMap().get(spr)) {
-				if (tile.y == til.y + 1) {
-					return til;
+		for (Chunk chk : chunkMap.values()) {
+			for (TileSprite spr : chunkMap.get(chk.getPosition()).getMap().keySet()) {
+				for (Tile til : chunkMap.get(chk.getPosition()).getMap().get(spr)) {
+					if (tile.x == til.x && tile.y == til.y - 1) {
+						return til;
+					}
 				}
 			}
 		}
 		return null;
 	}
-	
 	public Tile getBottomTile(Tile tile) {
-		Chunk chk = getAt((int) Math.floor(tile.x/8f), (int) Math.floor(tile.y/8f));
-		for (TileSprite spr : chunkMap.get(chk.getPosition()).getMap().keySet()) {
-			for (Tile til : chunkMap.get(chk.getPosition()).getMap().get(spr)) {
-				if (tile.y == til.y - 1) {
-					return til;
+		for (Chunk chk : chunkMap.values()) {
+			for (TileSprite spr : chunkMap.get(chk.getPosition()).getMap().keySet()) {
+				for (Tile til : chunkMap.get(chk.getPosition()).getMap().get(spr)) {
+					if (tile.x == til.x && tile.y == til.y + 1) {
+						return til;
+					}
 				}
 			}
 		}
 		return null;
 	}
 	
+	// Surroundings
 	public Map<Vector2i, Chunk> getSurroundings(int x, int y, int above, int side) {
 		Map<Vector2i, Chunk> surr = new HashMap<Vector2i, Chunk>();
 		

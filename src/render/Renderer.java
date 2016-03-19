@@ -52,40 +52,6 @@ public class Renderer {
 		System.out.printf("(%.3f\t%.3f\t%.3f\t%.3f)\n", vec.x, vec.y, vec.z, vec.w);
 	}
 	
-//	public void render(Entity entity, Camera camera) {
-//		shader.start();
-//		shader.loadProjectionMatrix(projectionMatrix);
-//		shader.loadViewMatrix(camera);
-//		
-//		//prepare();
-//		prepareSprite(entity.getSprite());
-//		
-//		GL11.glEnable(GL11.GL_BLEND);
-//		GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
-//		
-//		Matrix4f matrix = Maths.createTransformationMatrix(entity.getPosition(), entity.getScale(), entity.getRotation(), entity.getDepth());
-//		shader.loadTransformation(matrix);
-//		GL11.glDrawArrays(GL11.GL_TRIANGLE_STRIP, 0, entity.getSprite().getModel().getVextexCount());
-//		
-////		DEBUG THAT SIMULATES SHADER CALCULATIONS
-////		System.out.println("\nTRANSF-MATRIX");
-////		dispMatrix(matrix);
-////		System.out.println("gl_Positions");
-////		float sx = entity.getSprite().getSize().x;
-////		float sy = entity.getSprite().getSize().y;
-////		float relpos[][] = {{-sx/2, sy}, {sx/2, sy/2}, {-sx/2, -sy/2}, {sx/2, -sy/2}};
-////		for (float vert[] : relpos) {
-////			Vector4f vec = new Vector4f();
-////			Matrix4f.transform(matrix, new Vector4f(vert[0], vert[1], 0.0f, 1.0f), vec);
-////			Matrix4f.transform(Maths.createViewMatrix(camera), vec, vec);
-////			Matrix4f.transform(projectionMatrix, vec, vec);
-////			dispVector4(vec);
-////		}
-//		
-//		unbindSprite();
-//		shader.stop();
-//	}
-	
 	public void renderLayers(LayerMap layers, Camera camera) {
 		shader.start();
 		shader.loadViewMatrix(camera);

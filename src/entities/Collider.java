@@ -2,33 +2,34 @@ package entities;
 
 import org.lwjgl.util.vector.Vector2f;
 
+import models.Sprite;
 import storage.ChunkMap;
 
 public class Collider {
 	
 	private float x, y, w, h;
-	private Entity entity;
+	private Vector2f entPos;
 
-	public Collider(Entity ent) {
+	public Collider(Vector2f pos) {
 		this.x = -1;
 		this.y = -1;
 		this.w = 2;
 		this.h = 2;
-		this.entity = ent;
+		this.entPos = pos;
 	}
-	public Collider(Entity ent, float x, float y, float w, float h) {
+	public Collider(Vector2f pos, float x, float y, float w, float h) {
 		this.x = x;
 		this.y = y;
 		this.w = w;
 		this.h = h;
-		this.entity = ent;
+		this.entPos = pos;
 	}
 	
-	public void fitSprite() {
-		this.x = -entity.getSprite().getSize().x/2;
-		this.y = -entity.getSprite().getSize().y/2;
-		this.w = entity.getSprite().getSize().x;
-		this.h = entity.getSprite().getSize().y;
+	public void fitSprite(Sprite spr) {
+		this.x = -spr.getSize().x/2;
+		this.y = -spr.getSize().y/2;
+		this.w = spr.getSize().x;
+		this.h = spr.getSize().y;
 	}
 	
 	public void increaseWidthCentered(float w) {
@@ -63,6 +64,22 @@ public class Collider {
 	
 	public void setY(float y) {
 		this.y = y;
+	}
+	
+	public float getX() {
+		return x;
+	}
+	
+	public float getY() {
+		return y;
+	}
+	
+	public float getW() {
+		return w;
+	}
+	
+	public float getH() {
+		return h;
 	}
 	
 	public boolean isColliding(Collider col) {
@@ -103,19 +120,50 @@ public class Collider {
 	public Vector2f collideSlide(Tile til, ChunkMap chkMap, float nx, float ny) {
 		Vector2f slide = new Vector2f(1, 1);
 		if (isColliding(til, nx, ny)) {
-			Tile left = chkMap.getLeftTile(til);
-			Tile right = chkMap.getRightTile(til);
-//			Tile top = chkMap.getTopTile(til);
-//			Tile bottom = chkMap.getBottomTile(til);
-			if (!isCollidingY(til)) {
-				slide.y = 0;
-			}
-			if (!isCollidingX(til)) {
-				if ((left != null && !isColliding(left, nx, ny)) && (right != null && !isColliding(right, nx, ny))) {
+			float tilTop = til.y + Tile.TILE_SIZE;
+			float tilBottom = til.y;
+			float tilRight = til.x + Tile.TILE_SIZE;
+			float tilLeft = til.x;
+			
+			float curTop = getWY() + h;
+			float curBottom = getWY();
+			float curRight = getWX() + w;
+			float curLeft = getWX();
+			
+			if (curRight <= tilLeft) {
+				// We are left of tile
+				Tile left = chkMap.getLeftTile(til);
+				if (left != null && (curBottom >= tilTop || curTop <= tilBottom)) { // There is a left tile
+					slide.y = 0;
+				} else {
 					slide.x = 0;
 				}
-				if (isCollidingY(til)) {
+			}
+			if (curLeft >= tilRight) {
+				// We are right of tile
+				Tile right = chkMap.getRightTile(til);
+				if (right != null && (curBottom >= tilTop || curTop <= tilBottom)) { // There is a right tile
+					slide.y = 0;
+				} else {
 					slide.x = 0;
+				}
+			}
+			if (curBottom >= tilTop) {
+				// We are top of tile
+				Tile top = chkMap.getTopTile(til);
+				if (top != null && (curLeft >= tilRight || curRight <= tilLeft)) { // There is a top tile
+					slide.x = 0;
+				} else {
+					slide.y = 0;
+				}
+			}
+			if (curTop <= tilBottom) {
+				// We are bottom of tile
+				Tile bottom = chkMap.getBottomTile(til);
+				if (bottom != null && (curLeft >= tilRight || curRight <= tilLeft)) { // There is a bottom tile
+					slide.x = 0;
+				} else {
+					slide.y = 0;
 				}
 			}
 		}
@@ -136,25 +184,11 @@ public class Collider {
 		return false;
 	}
 	
-	private boolean isCollidingX(Tile til) {
-		if ((til.x < this.getWX() + this.w) && (til.x + Tile.TILE_SIZE > this.getWX())) {
-			return true;
-		}
-		return false;
-	}
-	
-	private boolean isCollidingY(Tile til) {
-		if ((til.y < this.getWY() + this.h) && (til.y + Tile.TILE_SIZE > this.getWY())) {
-			return true;
-		}
-		return false;
-	}
-	
 	public float getWX() {
-		return this.entity.position.x + this.x;
+		return this.entPos.x + this.x;
 	}
 	public float getWY() {
-		return this.entity.position.y + this.y;
+		return this.entPos.y + this.y;
 	}
 	
 }
