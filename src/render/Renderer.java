@@ -89,7 +89,7 @@ public class Renderer {
 				for (Tile tile : chk.get(spr)) {
 					Matrix4f matrix = Maths.createTransformationMatrix(tile.x, tile.y);
 					shader.loadTransformation(matrix);
-					GL11.glDrawArrays(GL11.GL_TRIANGLE_STRIP, 0, tile.getSprite().getModel().getVextexCount());
+					GL11.glDrawArrays(GL11.GL_TRIANGLE_STRIP, 0, tile.getType().getSprite().getModel().getVextexCount());
 				}
 				
 				unbindSprite();

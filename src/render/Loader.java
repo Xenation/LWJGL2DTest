@@ -19,6 +19,8 @@ import models.RawModel;
 
 public class Loader {
 	
+	public static final Loader DEF_LOADER = new Loader();
+	
 	private List<Integer> vaos = new ArrayList<Integer>();
 	private List<Integer> vbos = new ArrayList<Integer>();
 	private List<Integer> textures = new ArrayList<Integer>();

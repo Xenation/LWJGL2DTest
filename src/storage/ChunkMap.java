@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Map;
 
 import entities.Tile;
+import entities.TileType;
 import models.TileSprite;
 
 public class ChunkMap {
@@ -148,7 +149,7 @@ public class ChunkMap {
 			for (int cX = botLeft.x; cX <= botRight.x; cX++) {
 				if (getAt(cX, cY) == null) {
 					add(new Chunk(cX, cY));
-					System.out.println("Generating X"+cX+"  Y"+cY);
+					System.out.println("Generating  X"+cX+" Y"+cY);
 				}
 			}
 		}
@@ -159,14 +160,33 @@ public class ChunkMap {
 			if (chk.getPosition().y < Chunk.toChunkPosition(y) && chk.isGenerating) {
 				for (int x = chk.getPosition().x*8; x < chk.getPosition().x*8+8; x++) {
 					for (int w = chk.getPosition().y*8; w < chk.getPosition().y*8+8; w++) {
-						addTile(new Tile(tilSpr, x, w));
+						addTile(new Tile(TileType.Dirt, x, w));
 					}
 				}
 				chk.isGenerating = false;
 			} else if (chk.getPosition().y == Chunk.toChunkPosition(y) && chk.isGenerating) {
 				for (int x = chk.getPosition().x*8; x < chk.getPosition().x*8+8; x++) {
 					for (int w = chk.getPosition().y*8; w < y; w++) {
-						addTile(new Tile(tilSpr, x, w));
+						addTile(new Tile(TileType.Dirt, x, w));
+					}
+				}
+				chk.isGenerating = false;
+			}
+		}
+	}
+	
+	public void generateWave(TileSprite tilSpr, int y) {
+		for (Chunk chk : chunkMap.values()) {
+			if (chk.getPosition().y <= Chunk.toChunkPosition(y)+4 && chk.isGenerating) {
+				for (int x = chk.getPosition().x*8; x < chk.getPosition().x*8+8; x++) {
+					for (int w = chk.getPosition().y*8; w < chk.getPosition().y*8+8; w++) {
+						if (w < (int) (Math.sin(Math.toRadians(x*4))*10 + y - 3)) {
+							addTile(new Tile(TileType.Stone, x, w));
+						} else if (w < (int) (Math.sin(Math.toRadians(x*4))*10 + y)) {
+							addTile(new Tile(TileType.Dirt, x, w));
+						} else if (w == (int) (Math.sin(Math.toRadians(x*4))*10 + y)) {
+							addTile(new Tile(TileType.Grass, x, w));
+						}
 					}
 				}
 				chk.isGenerating = false;

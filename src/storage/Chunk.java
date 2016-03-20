@@ -26,12 +26,12 @@ public class Chunk {
 		if (tile.x < position.x*8 + 8 && tile.x >= position.x*8
 				&& tile.y < position.y*8 + 8 && tile.y >= position.y*8) {
 			if (getTileAt(tile.x, tile.y) == null) {
-				if (tiles.containsKey(tile.getSprite())) {
-					tiles.get(tile.getSprite()).add(tile);
+				if (tiles.containsKey(tile.getType().getSprite())) {
+					tiles.get(tile.getType().getSprite()).add(tile);
 				} else {
 					List<Tile> newList = new ArrayList<Tile>();
 					newList.add(tile);
-					tiles.put(tile.getSprite(), newList);
+					tiles.put(tile.getType().getSprite(), newList);
 				}
 			}
 		}
@@ -44,8 +44,8 @@ public class Chunk {
 	}
 	
 	public void remove(Tile tile) {
-		if (tiles.containsKey(tile.getSprite())) {
-			tiles.get(tile.getSprite()).remove(tile);
+		if (tiles.containsKey(tile.getType().getSprite())) {
+			tiles.get(tile.getType().getSprite()).remove(tile);
 		}
 	}
 	

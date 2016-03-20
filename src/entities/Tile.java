@@ -1,28 +1,26 @@
 package entities;
 
-import models.TileSprite;
-
 public class Tile {
 	
 	public static final float TILE_SIZE = 1;
 	
-	private TileSprite sprite;
+	private TileType type;
 	public final int x;
 	public final int y;
 	
 	public Tile() {
-		this.sprite = null;
+		this.type = TileType.Dirt;
 		this.x = 0;
 		this.y = 0;
 	}
-	public Tile(TileSprite spr, int x, int y) {
-		this.sprite = spr;
+	public Tile(TileType typ, int x, int y) {
+		this.type = typ;
 		this.x = x;
 		this.y = y;
 	}
 	
-	public TileSprite getSprite() {
-		return sprite;
+	public TileType getType() {
+		return type;
 	}
 	
 }

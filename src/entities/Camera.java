@@ -31,7 +31,8 @@ public class Camera {
 	public void move(ChunkMap chkMap) {
 		
 		chkMap.initializeChunks((int) position.x, (int) position.y, (int) Renderer.UNITS_Y/2, (int) Renderer.UNITS_Y);
-		chkMap.generateFlatTiles(tileSpr, -8);
+//		chkMap.generateFlatTiles(tileSpr, -8);
+		chkMap.generateWave(tileSpr, -8);
 		
 		if (follow != null) {
 			this.position.set(follow.getPosition());
@@ -56,7 +57,7 @@ public class Camera {
 			float posX = this.position.x + (Mouse.getX() - Display.getWidth()/2) / ((float) Display.getHeight() / Renderer.UNITS_Y);
 			float posY = this.position.y + (Mouse.getY() - Display.getHeight()/2) / ((float) Display.getHeight() / Renderer.UNITS_Y);
 //			Display.setTitle("X"+Math.floor(posX)+"    Y"+Math.floor(posY));
-			chkMap.addTile(new Tile(tileSpr, (int) Math.floor(posX), (int) Math.floor(posY)));
+			chkMap.addTile(new Tile(TileType.Dirt, (int) Math.floor(posX), (int) Math.floor(posY)));
 		}
 		
 		if (Mouse.isButtonDown(1)) {

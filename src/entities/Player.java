@@ -94,7 +94,7 @@ public class Player extends Entity {
 			}
 		}
 		
-		if (Keyboard.isKeyDown(Keyboard.KEY_Z)) {
+		if (Keyboard.isKeyDown(Keyboard.KEY_Z) && velocity.y < 5) {
 			vy = 0.25f;
 		}
 		
