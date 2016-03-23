@@ -4,15 +4,16 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import entities.Tile;
-import models.TileSprite;
+import entities.TileType;
 
 public class Chunk {
 	
 	public boolean isGenerating = true;
 	
-	private Map<TileSprite, List<Tile>> tiles = new HashMap<TileSprite, List<Tile>>();
+	private Map<TileType, List<Tile>> tiles = new HashMap<TileType, List<Tile>>();
 	private Vector2i position;
 	
 	public Chunk() {
@@ -26,12 +27,12 @@ public class Chunk {
 		if (tile.x < position.x*8 + 8 && tile.x >= position.x*8
 				&& tile.y < position.y*8 + 8 && tile.y >= position.y*8) {
 			if (getTileAt(tile.x, tile.y) == null) {
-				if (tiles.containsKey(tile.getType().getSprite())) {
-					tiles.get(tile.getType().getSprite()).add(tile);
+				if (tiles.containsKey(tile.getType())) {
+					tiles.get(tile.getType()).add(tile);
 				} else {
 					List<Tile> newList = new ArrayList<Tile>();
 					newList.add(tile);
-					tiles.put(tile.getType().getSprite(), newList);
+					tiles.put(tile.getType(), newList);
 				}
 			}
 		}
@@ -43,42 +44,75 @@ public class Chunk {
 		}
 	}
 	
-	public void remove(Tile tile) {
-		if (tiles.containsKey(tile.getType().getSprite())) {
-			tiles.get(tile.getType().getSprite()).remove(tile);
-		}
-	}
-	
-	public void removeSprite(TileSprite spr) {
-		tiles.remove(spr);
-	}
-	
-	public void removeAt(int x, int y) {
-		TileSprite sprRef = null;
-		Tile toRemove = null;
-		for (TileSprite spr : tiles.keySet()) {
-			for (Tile til : tiles.get(spr)) {
-				if (til.x == x && til.y == y) {
-					toRemove = til;
-					sprRef = spr;
+	public void set(Tile tile) {
+		if (tile.x < position.x*8 + 8 && tile.x >= position.x*8
+				&& tile.y < position.y*8 + 8 && tile.y >= position.y*8) {
+			Tile existing = getTileAt(tile.x, tile.y);
+			if (existing == null) {
+				if (tiles.containsKey(tile.getType())) {
+					tiles.get(tile.getType()).add(tile);
+				} else {
+					List<Tile> newList = new ArrayList<Tile>();
+					newList.add(tile);
+					tiles.put(tile.getType(), newList);
+				}
+			} else {
+				tiles.get(existing.getType()).remove(existing);
+				if (existing.getType() == tile.getType()) {
+					tiles.get(tile.getType()).add(tile);
+				} else {
+					if (tiles.containsKey(tile.getType())) {
+						tiles.get(tile.getType()).add(tile);
+					} else {
+						List<Tile> newList = new ArrayList<Tile>();
+						newList.add(tile);
+						tiles.put(tile.getType(), newList);
+					}
 				}
 			}
 		}
-		if (sprRef != null && toRemove != null)
-			tiles.get(sprRef).remove(toRemove);
 	}
 	
-	public Map<TileSprite, List<Tile>> getMap() {
+	public void remove(Tile tile) {
+		if (tiles.containsKey(tile.getType())) {
+			tiles.get(tile.getType()).remove(tile);
+		}
+	}
+	
+	public void removeType(TileType typ) {
+		tiles.remove(typ);
+	}
+	
+	public void removeAt(int x, int y) {
+		TileType typRef = null;
+		Tile toRemove = null;
+		for (TileType typ : tiles.keySet()) {
+			for (Tile til : tiles.get(typ)) {
+				if (til.x == x && til.y == y) {
+					toRemove = til;
+					typRef = typ;
+				}
+			}
+		}
+		if (typRef != null && toRemove != null)
+			tiles.get(typRef).remove(toRemove);
+	}
+	
+	public Map<TileType, List<Tile>> getMap() {
 		return tiles;
 	}
 	
-	public List<Tile> get(TileSprite spr) {
-		return tiles.get(spr);
+	public Set<TileType> getTypes() {
+		return tiles.keySet();
+	}
+	
+	public List<Tile> get(TileType typ) {
+		return tiles.get(typ);
 	}
 	
 	public Tile getTileAt(int x, int y) {
-		for (TileSprite spr : tiles.keySet()) {
-			for (Tile til : tiles.get(spr)) {
+		for (TileType typ : tiles.keySet()) {
+			for (Tile til : tiles.get(typ)) {
 				if (til.x == x && til.y == y) {
 					return til;
 				}
@@ -99,7 +133,7 @@ public class Chunk {
 	}
 	public static int toChunkPosition(int i) {
 		int n;
-		if (i < 0) {
+		if (i < 0 && i % 8 != 0) {
 			n = i/8-1;
 		} else {
 			n = i/8;

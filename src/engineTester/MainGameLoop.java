@@ -53,9 +53,6 @@ public class MainGameLoop {
 		
 		ChunkMap chkMap = new ChunkMap();
 		
-		TileSprite tilSpr = new TileSprite(loader, "tile_dirt");
-		camera.setTile(tilSpr);
-		
 		while (!Display.isCloseRequested()) {
 			// Game Loop
 			player.move(layerMap.getLayer(0), chkMap);

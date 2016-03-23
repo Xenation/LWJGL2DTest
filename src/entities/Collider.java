@@ -133,7 +133,7 @@ public class Collider {
 			if (curRight <= tilLeft) {
 				// We are left of tile
 				Tile left = chkMap.getLeftTile(til);
-				if (left != null && (curBottom >= tilTop || curTop <= tilBottom)) { // There is a left tile
+				if (left != null && left.getType().isSolid() && (curBottom >= tilTop || curTop <= tilBottom)) { // There is a left tile
 					slide.y = 0;
 				} else {
 					slide.x = 0;
@@ -142,7 +142,7 @@ public class Collider {
 			if (curLeft >= tilRight) {
 				// We are right of tile
 				Tile right = chkMap.getRightTile(til);
-				if (right != null && (curBottom >= tilTop || curTop <= tilBottom)) { // There is a right tile
+				if (right != null && right.getType().isSolid() && (curBottom >= tilTop || curTop <= tilBottom)) { // There is a right tile
 					slide.y = 0;
 				} else {
 					slide.x = 0;
@@ -151,7 +151,7 @@ public class Collider {
 			if (curBottom >= tilTop) {
 				// We are top of tile
 				Tile top = chkMap.getTopTile(til);
-				if (top != null && (curLeft >= tilRight || curRight <= tilLeft)) { // There is a top tile
+				if (top != null && top.getType().isSolid() && (curLeft >= tilRight || curRight <= tilLeft)) { // There is a top tile
 					slide.x = 0;
 				} else {
 					slide.y = 0;
@@ -160,7 +160,7 @@ public class Collider {
 			if (curTop <= tilBottom) {
 				// We are bottom of tile
 				Tile bottom = chkMap.getBottomTile(til);
-				if (bottom != null && (curLeft >= tilRight || curRight <= tilLeft)) { // There is a bottom tile
+				if (bottom != null && bottom.getType().isSolid() && (curLeft >= tilRight || curRight <= tilLeft)) { // There is a bottom tile
 					slide.x = 0;
 				} else {
 					slide.y = 0;

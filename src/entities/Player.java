@@ -4,7 +4,6 @@ import org.lwjgl.input.Keyboard;
 import org.lwjgl.util.vector.Vector2f;
 
 import models.Sprite;
-import models.TileSprite;
 import render.DisplayManager;
 import render.Renderer;
 import storage.Chunk;
@@ -47,18 +46,20 @@ public class Player extends Entity {
 			}
 		}
 		
-		for (Chunk chk : chunks.getSurroundings((int) position.x, (int) position.y, (int) Renderer.UNITS_Y/2, (int) Renderer.UNITS_Y).values()) {
-			for (TileSprite spr : chk.getMap().keySet()) {
-				for (Tile til : chk.get(spr)) {
-					slide = this.collider.collideSlide(til, chunks, dx, dy);
-					if (slide.y == 0) {
-						if (dy < 0) {
-							isInAir = false;
+		for (Chunk chk : chunks.getSurroundingChunks((int) position.x, (int) position.y, (int) Renderer.UNITS_Y/2, (int) Renderer.UNITS_Y)) {
+			for (TileType typ : chk.getTypes()) {
+				for (Tile til : chk.get(typ)) {
+					if (til.getType().isSolid()) {
+						slide = this.collider.collideSlide(til, chunks, dx, dy);
+						if (slide.y == 0) {
+							if (dy < 0) {
+								isInAir = false;
+							}
+							velocity.y = 0;
 						}
-						velocity.y = 0;
+						dx *= slide.x;
+						dy *= slide.y;
 					}
-					dx *= slide.x;
-					dy *= slide.y;
 				}
 			}
 		}
@@ -101,6 +102,11 @@ public class Player extends Entity {
 		if (Keyboard.isKeyDown(Keyboard.KEY_SPACE) && !isInAir) {
 			vy = 10;
 			isInAir = true;
+		}
+		
+		if (Keyboard.isKeyDown(Keyboard.KEY_MULTIPLY)) {
+			this.position.x = 0;
+			this.position.y = 0;
 		}
 		
 		this.velocity.x = vx;

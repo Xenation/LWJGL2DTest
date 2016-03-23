@@ -10,6 +10,7 @@ import org.lwjgl.util.vector.Vector4f;
 import entities.Camera;
 import entities.Entity;
 import entities.Tile;
+import entities.TileType;
 import models.RawModel;
 import models.Sprite;
 import models.TileSprite;
@@ -80,13 +81,13 @@ public class Renderer {
 		shader.start();
 		shader.loadViewMatrix(camera);
 		
-		for (Chunk chk : chunks.getSurroundings((int) camera.getPosition().x, (int) camera.getPosition().y, (int) UNITS_Y/2, (int) UNITS_Y).values()) {
-			for (TileSprite spr : chk.getMap().keySet()) {
-				prepareSprite(spr);
+		for (Chunk chk : chunks.getSurroundingChunks((int) camera.getPosition().x, (int) camera.getPosition().y, (int) UNITS_Y/2+8, (int) UNITS_Y)) {
+			for (TileType typ : chk.getTypes()) {
+				prepareSprite(typ.getSprite());
 				GL11.glEnable(GL11.GL_BLEND);
 				GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
 				
-				for (Tile tile : chk.get(spr)) {
+				for (Tile tile : chk.get(typ)) {
 					Matrix4f matrix = Maths.createTransformationMatrix(tile.x, tile.y);
 					shader.loadTransformation(matrix);
 					GL11.glDrawArrays(GL11.GL_TRIANGLE_STRIP, 0, tile.getType().getSprite().getModel().getVextexCount());

@@ -4,24 +4,32 @@ import models.TileSprite;
 import render.Loader;
 
 public enum TileType {
-	Dirt("dirt", "tile_dirt"),
-	Grass("grass", "tile_grass"),
-	Stone("stone", "tile_stone");
+	Dirt("tile_dirt"),
+	Grass("tile_grass"),
+	Stone("tile_stone"),
+	Log("tile_log"),
+	Leaves("tile_leaves"),
+	TallGrass("tile_tallgrass", false);
 	
-	private String name;
-	private TileSprite sprite;
+	private final TileSprite sprite;
+	private final boolean isSolid;
 	
-	private TileType(String name, String sprFile) {
-		this.name = name;
+	private TileType(String sprFile) {
 		this.sprite = new TileSprite(Loader.DEF_LOADER, sprFile);
+		this.isSolid = true;
 	}
 	
-	public String getName() {
-		return this.name;
+	private TileType(String sprFile, boolean solid) {
+		this.sprite = new TileSprite(Loader.DEF_LOADER, sprFile);
+		this.isSolid = solid;
 	}
 	
 	public TileSprite getSprite() {
 		return this.sprite;
+	}
+	
+	public boolean isSolid() {
+		return this.isSolid;
 	}
 	
 }
