@@ -9,8 +9,6 @@ import org.lwjgl.util.vector.Vector4f;
 
 import entities.Camera;
 import entities.Entity;
-import entities.Tile;
-import entities.TileType;
 import models.RawModel;
 import models.Sprite;
 import models.TileSprite;
@@ -19,6 +17,8 @@ import storage.Chunk;
 import storage.ChunkMap;
 import storage.Layer;
 import storage.LayerMap;
+import tiles.Tile;
+import tiles.TileType;
 import toolbox.Maths;
 
 public class Renderer {

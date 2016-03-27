@@ -8,6 +8,10 @@ import org.lwjgl.util.vector.Vector2f;
 import render.DisplayManager;
 import render.Renderer;
 import storage.ChunkMap;
+import tiles.SupportedTile;
+import tiles.Tile;
+import tiles.TileType;
+import toolbox.Maths;
 
 public class Camera {
 	
@@ -15,18 +19,21 @@ public class Camera {
 	private float rotation;
 	
 	private Entity follow;
+	private float followSpeed;
 	private TileType tilType;
 	
 	public Camera() {
 		this.position = new Vector2f(0, 0);
 		this.rotation = 0;
 		this.tilType = TileType.Dirt;
+		this.followSpeed = 4;
 	}
 	
 	public Camera(Vector2f position, float rotation) {
 		this.position = position;
 		this.rotation = rotation;
 		this.tilType = TileType.Dirt;
+		this.followSpeed = 4;
 	}
 	
 	public void move(ChunkMap chkMap) {
@@ -36,7 +43,12 @@ public class Camera {
 		chkMap.generateWave(-4);
 		
 		if (follow != null) {
-			this.position.set(follow.getPosition());
+			if (this.followSpeed != 0) {
+				this.position.x = Maths.lerp(this.position.x, follow.position.x, DisplayManager.deltaTime() * followSpeed);
+				this.position.y = Maths.lerp(this.position.y, follow.position.y, DisplayManager.deltaTime() * followSpeed);
+			} else {
+				this.position.set(follow.getPosition());
+			}
 		} else {
 			if (Keyboard.isKeyDown(Keyboard.KEY_NUMPAD8)) {
 				this.position.y += 0.02f;
@@ -74,23 +86,24 @@ public class Camera {
 		}
 		
 		if (tilType != null && Mouse.isButtonDown(0)) {
-			float posX = this.position.x + (Mouse.getX() - Display.getWidth()/2) / ((float) Display.getHeight() / Renderer.UNITS_Y);
-			float posY = this.position.y + (Mouse.getY() - Display.getHeight()/2) / ((float) Display.getHeight() / Renderer.UNITS_Y);
-//			Display.setTitle("X"+Math.floor(posX)+"    Y"+Math.floor(posY));
-			chkMap.setTile(new Tile(tilType, (int) Math.floor(posX), (int) Math.floor(posY)));
+			if (tilType != TileType.TallGrass) {
+				chkMap.setTile(new Tile(tilType, Maths.fastFloor(getMouseWorldX()), Maths.fastFloor(getMouseWorldY())));
+			} else {
+				chkMap.setTile(new SupportedTile(tilType, Maths.fastFloor(getMouseWorldX()), Maths.fastFloor(getMouseWorldY())));
+			}
 		}
-		
 		if (Mouse.isButtonDown(1)) {
-			float posX = this.position.x + (Mouse.getX() - Display.getWidth()/2) / ((float) Display.getHeight() / Renderer.UNITS_Y);
-			float posY = this.position.y + (Mouse.getY() - Display.getHeight()/2) / ((float) Display.getHeight() / Renderer.UNITS_Y);
-//			Display.setTitle("X"+Math.floor(posX)+"    Y"+Math.floor(posY));
-			chkMap.removeTile((int) Math.floor(posX), (int) Math.floor(posY));
+			chkMap.removeTile(Maths.fastFloor(getMouseWorldX()), Maths.fastFloor(getMouseWorldY()));
 		}
 		
 	}
 	
 	public void setFollow(Entity ent) {
 		this.follow = ent;
+	}
+	
+	public void setFollowSpeed(float speed) {
+		this.followSpeed = speed;
 	}
 	
 	public void setTileType(TileType type) {
@@ -111,6 +124,14 @@ public class Camera {
 	
 	public void setRotation(float rotation) {
 		this.rotation = rotation;
+	}
+	
+	public float getMouseWorldX() {
+		return this.position.x + (Mouse.getX() - Display.getWidth()/2) / ((float) Display.getHeight() / Renderer.UNITS_Y);
+	}
+	
+	public float getMouseWorldY() {
+		return this.position.y + (Mouse.getY() - Display.getHeight()/2) / ((float) Display.getHeight() / Renderer.UNITS_Y);
 	}
 	
 }

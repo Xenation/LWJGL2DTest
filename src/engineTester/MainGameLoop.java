@@ -33,7 +33,7 @@ public class MainGameLoop {
 //		ent1.getCollider().fitSprite(ent1.getSprite());
 		
 		Player player = new Player(new Sprite(loader, new Vector2f(1f, 2f), "player"), new Vector2f(0, 0), new Vector2f(1, 1), 0);
-		player.setCollider(new Collider(player.getPosition()));;
+		player.setCollider(new PlayerCollider(player));
 		player.getCollider().fitSprite(player.getSprite());
 		player.getCollider().increaseWidthCentered(-0.05f);
 		player.getCollider().increaseHeight(-0.1f);
@@ -57,6 +57,8 @@ public class MainGameLoop {
 			// Game Loop
 			player.move(layerMap.getLayer(0), chkMap);
 			camera.move(chkMap);
+			
+			chkMap.updateTiles();
 			
 			renderer.prepare();
 			renderer.renderLayers(layerMap, camera);

@@ -5,9 +5,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import entities.Tile;
-import entities.TileType;
 import models.TileSprite;
+import tiles.Tile;
+import tiles.TileType;
 
 public class ChunkMap {
 	
@@ -72,6 +72,19 @@ public class ChunkMap {
 		for (Vector2i vec : chunkMap.keySet()) {
 			if (vec.equals(x, y)) {
 				return chunkMap.get(vec);
+			}
+		}
+		return null;
+	}
+	
+	// Tile
+	public Tile getTileAt(int x, int y) {
+		Chunk chk = getAt(Chunk.toChunkPosition(x, y));
+		for (TileType typ : chk.getTypes()) {
+			for (Tile til : chk.get(typ)) {
+				if (til.x == x && til.y == y) {
+					return til;
+				}
 			}
 		}
 		return null;
@@ -217,6 +230,26 @@ public class ChunkMap {
 				}
 				chk.isGenerating = false;
 			}
+		}
+	}
+	
+	
+	//// UPDATER \\\\
+	public void updateTiles() {
+		// Store tiles to delete
+		List<Tile> toRemove = new ArrayList<Tile>();
+		for (Chunk chk : chunkMap.values()) {
+			for (TileType typ : chk.getTypes()) {
+				for (Tile til : chk.get(typ)) {
+					if (!til.update(this)) {
+						toRemove.add(til);
+					}
+				}
+			}
+		}
+		// Delete stored tiles
+		for (Tile til : toRemove) {
+			removeTile(til.x, til.y);
 		}
 	}
 	

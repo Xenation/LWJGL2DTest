@@ -4,11 +4,12 @@ import org.lwjgl.util.vector.Vector2f;
 
 import models.Sprite;
 import storage.ChunkMap;
+import tiles.Tile;
 
 public class Collider {
 	
-	private float x, y, w, h;
-	private Vector2f entPos;
+	protected float x, y, w, h;
+	protected Vector2f entPos;
 
 	public Collider(Vector2f pos) {
 		this.x = -1;
@@ -136,7 +137,12 @@ public class Collider {
 				if (left != null && left.getType().isSolid() && (curBottom >= tilTop || curTop <= tilBottom)) { // There is a left tile
 					slide.y = 0;
 				} else {
-					slide.x = 0;
+					Tile top = chkMap.getTopTile(til);
+					if ((top == null || !top.getType().isSolid()) && (curBottom >= tilBottom && curBottom <= tilTop)) { // There is no top tile
+						this.entPos.y += Tile.TILE_SIZE + 0.01f; // Step Up
+					} else {
+						slide.x = 0;
+					}
 				}
 			}
 			if (curLeft >= tilRight) {
@@ -145,7 +151,12 @@ public class Collider {
 				if (right != null && right.getType().isSolid() && (curBottom >= tilTop || curTop <= tilBottom)) { // There is a right tile
 					slide.y = 0;
 				} else {
-					slide.x = 0;
+					Tile top = chkMap.getTopTile(til);
+					if ((top == null || !top.getType().isSolid()) && (curBottom >= tilBottom && curBottom <= tilTop)) { // There is no top tile
+						this.entPos.y += Tile.TILE_SIZE + 0.01f; // Step Up
+					} else {
+						slide.x = 0;
+					}
 				}
 			}
 			if (curBottom >= tilTop) {

@@ -9,6 +9,8 @@ import render.Renderer;
 import storage.Chunk;
 import storage.ChunkMap;
 import storage.Layer;
+import tiles.Tile;
+import tiles.TileType;
 
 public class Player extends Entity {
 	
@@ -111,6 +113,14 @@ public class Player extends Entity {
 		
 		this.velocity.x = vx;
 		this.velocity.y += vy;
+	}
+	
+	public void stepUp() {
+		this.position.y += Tile.TILE_SIZE;
+	}
+	
+	public boolean isInAir() {
+		return isInAir;
 	}
 	
 }

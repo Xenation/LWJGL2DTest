@@ -1,10 +1,12 @@
-package entities;
+package tiles;
 
-public class Tile {
+import storage.ChunkMap;
+
+public class Tile implements TileUpdater {
 	
 	public static final float TILE_SIZE = 1;
 	
-	private TileType type;
+	protected TileType type;
 	public final int x;
 	public final int y;
 	
@@ -21,6 +23,10 @@ public class Tile {
 	
 	public TileType getType() {
 		return type;
+	}
+	
+	public boolean update(ChunkMap chkMap) {
+		return true;
 	}
 	
 }

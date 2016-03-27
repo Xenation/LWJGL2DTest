@@ -1,4 +1,4 @@
-package entities;
+package tiles;
 
 import models.TileSprite;
 import render.Loader;

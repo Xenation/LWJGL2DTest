@@ -1,7 +1,7 @@
 package models;
 
-import entities.Tile;
 import render.Loader;
+import tiles.Tile;
 
 public class TileSprite {
 	

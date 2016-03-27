@@ -12,7 +12,7 @@ public class DisplayManager {
 	
 	public static final int WIDTH = 1280;
 	public static final int HEIGHT = 720;
-	private static final int FPS_CAP = 120;
+	private static final int FPS_CAP = 3000;
 	
 	public static float aspectRatio = ((float)WIDTH / (float)HEIGHT);
 	

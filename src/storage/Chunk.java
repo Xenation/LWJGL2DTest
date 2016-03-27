@@ -6,8 +6,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import entities.Tile;
-import entities.TileType;
+import tiles.Tile;
+import tiles.TileType;
 
 public class Chunk {
 	
